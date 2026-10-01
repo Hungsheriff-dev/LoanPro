@@ -1,0 +1,77 @@
+<div class="page">
+  <div class="page-header">
+    <h2>Chi tiết khách hàng</h2>
+    <a mat-button routerLink="/customers">← Quay lại danh sách</a>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  } @else {
+    @if (customer(); as c) {
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>{{ c.fullName }}</mat-card-title>
+          <mat-card-subtitle>{{ c.customerId }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="grid">
+            <div class="item">
+              <div class="label">CCCD/CMND</div>
+              <div class="value">{{ c.identityNumber }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Số điện thoại</div>
+              <div class="value">{{ c.phone }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Email</div>
+              <div class="value">{{ c.email || '-' }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Ngày sinh</div>
+              <div class="value">{{ formatDate(c.dateOfBirth) }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Nghề nghiệp</div>
+              <div class="value">{{ c.occupation || '-' }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Thu nhập hàng tháng</div>
+              <div class="value">{{ formatCurrency(c.monthlyIncome) }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Điểm tín dụng</div>
+              <div class="value">{{ c.creditScore ?? '-' }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Trạng thái</div>
+              <div class="value">{{ c.status || '-' }}</div>
+            </div>
+
+            <div class="item full">
+              <div class="label">Địa chỉ</div>
+              <div class="value">{{ c.address || '-' }}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">Ngày tạo</div>
+              <div class="value">{{ formatDate(c.createdAt) }}</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>

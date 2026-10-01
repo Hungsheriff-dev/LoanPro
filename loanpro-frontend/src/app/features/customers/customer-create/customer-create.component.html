@@ -1,0 +1,79 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Tạo khách hàng mới</h2>
+      <a mat-button routerLink="/customers">← Quay lại</a>
+    </div>
+  
+    <mat-card class="form-card">
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Họ tên *</mat-label>
+              <input matInput formControlName="fullName" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Ngày sinh</mat-label>
+              <input matInput type="date" formControlName="dateOfBirth" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>CCCD/CMND *</mat-label>
+              <input matInput formControlName="identityNumber" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Số điện thoại *</mat-label>
+              <input matInput formControlName="phone" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Nghề nghiệp</mat-label>
+              <input matInput formControlName="occupation" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Địa chỉ</mat-label>
+              <input matInput formControlName="address" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Thu nhập hàng tháng</mat-label>
+              <input matInput type="number" formControlName="monthlyIncome" />
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Điểm tín dụng</mat-label>
+              <input matInput type="number" formControlName="creditScore" />
+            </mat-form-field>
+          </div>
+  
+          @if (errorMessage()) {
+            <div class="error">{{ errorMessage() }}</div>
+          }
+  
+          <div class="actions">
+            <button mat-button type="button" routerLink="/customers">Hủy</button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="loading()"
+            >
+              @if (loading()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                Lưu khách hàng
+              }
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

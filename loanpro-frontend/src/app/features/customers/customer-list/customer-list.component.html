@@ -1,0 +1,55 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Danh sách khách hàng</h2>
+      <a mat-raised-button color="primary" routerLink="/customers/create">
+        + Tạo khách hàng
+      </a>
+    </div>
+  
+    @if (loading()) {
+      <div class="loading"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (errorMessage()) {
+      <div class="error">{{ errorMessage() }}</div>
+    } @else {
+      <table mat-table [dataSource]="customers()" class="mat-elevation-z1">
+        <ng-container matColumnDef="customerId">
+          <th mat-header-cell *matHeaderCellDef>Mã KH</th>
+          <td mat-cell *matCellDef="let row">{{ row.customerId }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>Họ tên</th>
+          <td mat-cell *matCellDef="let row">{{ row.fullName }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>SĐT</th>
+          <td mat-cell *matCellDef="let row">{{ row.phone }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="identityNumber">
+          <th mat-header-cell *matHeaderCellDef>CCCD</th>
+          <td mat-cell *matCellDef="let row">{{ row.identityNumber }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="monthlyIncome">
+          <th mat-header-cell *matHeaderCellDef>Thu nhập</th>
+          <td mat-cell *matCellDef="let row">
+            {{ formatCurrency(row.monthlyIncome) }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <a mat-button color="primary" [routerLink]="['/customers', row._id]">
+              Chi tiết
+            </a>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    }
+  </div>

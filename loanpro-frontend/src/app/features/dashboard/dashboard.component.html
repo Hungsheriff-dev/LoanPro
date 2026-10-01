@@ -1,0 +1,88 @@
+<div class="dashboard">
+  <h2>Dashboard</h2>
+
+  @if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  } @else {
+    @if (data(); as d) {
+      <div class="cards">
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Khách hàng</div>
+            <div class="value">{{ d.customers.total }}</div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Hồ sơ vay</div>
+            <div class="value">{{ d.applications.total }}</div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Khoản vay active</div>
+            <div class="value">{{ d.loans.active }}</div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card warning">
+          <mat-card-content>
+            <div class="label">Kỳ quá hạn</div>
+            <div class="value">{{ d.repayments.overdueCount }}</div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="cards">
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Tổng giải ngân</div>
+            <div class="value money">
+              {{ formatCurrency(d.loans.totalDisbursed) }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Đã thu</div>
+            <div class="value money">
+              {{ formatCurrency(d.loans.totalRepaid) }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="label">Dư nợ còn lại</div>
+            <div class="value money">
+              {{ formatCurrency(d.loans.totalRemaining) }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card class="status-card">
+        <mat-card-header>
+          <mat-card-title>Hồ sơ theo trạng thái</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-grid">
+            <div>DRAFT: <b>{{ d.applications.byStatus.DRAFT }}</b></div>
+            <div>PENDING: <b>{{ d.applications.byStatus.PENDING }}</b></div>
+            <div>REVIEWING: <b>{{ d.applications.byStatus.REVIEWING }}</b></div>
+            <div>APPROVED: <b>{{ d.applications.byStatus.APPROVED }}</b></div>
+            <div>REJECTED: <b>{{ d.applications.byStatus.REJECTED }}</b></div>
+            <div>DISBURSED: <b>{{ d.applications.byStatus.DISBURSED }}</b></div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>

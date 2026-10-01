@@ -1,0 +1,175 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Chi tiết hồ sơ vay</h2>
+      <a mat-button routerLink="/loan-applications">← Quay lại danh sách</a>
+    </div>
+  
+    @if (loading()) {
+      <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (errorMessage() && !application()) {
+      <mat-card>
+        <mat-card-content>
+          <div class="error">{{ errorMessage() }}</div>
+          <button mat-button routerLink="/loan-applications">Quay lại</button>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      @if (application(); as app) {  <!-- Nếu có application, Angular đặt nó vào biến app -->
+        <mat-card class="detail-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{ app.applicationId || app._id }} <!-- có thì hiển thị mã hồ sơ-->
+            </mat-card-title>
+            <mat-card-subtitle>
+              <mat-chip [color]="getStatusColor(app.status)" selected> <!-- hiển thị trạng thái-->
+                {{ getStatusLabel(app.status) }}
+              </mat-chip>
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-divider></mat-divider>
+  
+          <mat-card-content>
+            <div class="info-grid">
+              <!-- Thông tin khách hàng --> 
+              <div class="section">
+                <h3>Thông tin khách hàng</h3>
+                <div class="row">
+                  <span class="label">Mã KH:</span>
+                  <span class="value">
+                    {{ getCustomerCode(app.customer) }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Họ tên:</span>
+                  <span class="value">{{ getCustomerName(app.customer) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">CMND/CCCD:</span>
+                  <span class="value">{{ getCustomerIdentity(app.customer) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">SĐT:</span>
+                  <span class="value">{{ getCustomerPhone(app.customer) }}</span>
+                </div>
+              </div>
+  
+              <!-- Thông tin khoản vay -->
+              <div class="section">
+                <h3>Thông tin khoản vay</h3>
+                <div class="row">
+                  <span class="label">Loại vay:</span>
+                  <span class="value">{{ app.loanType }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Số tiền:</span>
+                  <span class="value amount">{{ formatCurrency(app.amount) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kỳ hạn:</span>
+                  <span class="value">{{ app.tenure }} tháng</span>
+                </div>
+                <div class="row">
+                  <span class="label">Lãi suất:</span>
+                  <span class="value">
+                    {{ app.interestRate != null ? app.interestRate + '%/năm' : '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Mục đích:</span>
+                  <span class="value">{{ app.purpose || '—' }}</span>
+                </div>
+              </div>
+  
+              <!-- Thông tin trạng thái & thời gian -->
+              <div class="section full">
+                <h3>Trạng thái & thời gian</h3>
+                <div class="row">
+                  <span class="label">Trạng thái:</span>
+                  <span class="value">{{ getStatusLabel(app.status) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Bước hiện tại:</span>
+                  <span class="value">{{ app.currentStep ?? '—' }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Ngày tạo:</span>
+                  <span class="value">{{ formatDate(app.createdAt) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Ngày gửi:</span>
+                  <span class="value">{{ formatDate(app.submittedAt) }}</span>
+                </div>
+              </div>
+            </div>
+  
+            @if (errorMessage()) {
+              <div class="error">{{ errorMessage() }}</div>
+            }
+          </mat-card-content>
+  
+          <mat-divider></mat-divider>
+  
+          <mat-card-actions align="end">
+            <button mat-button routerLink="/loan-applications">
+              Quay lại
+            </button>
+  
+            @if (app.status === 'DRAFT') {
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="onSubmitApplication()"
+                [disabled]="submitting()"
+              >
+                @if (submitting()) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                } @else {
+                  Gửi hồ sơ
+                }
+              </button>
+            }
+            <mat-card-actions align="end">
+              <button mat-button routerLink="/loan-applications">
+                Quay lại
+              </button>
+            
+              <!-- Nút Gửi hồ sơ (đã có sẵn) -->
+              @if (app.status === 'DRAFT') {
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="onSubmitApplication()"
+                  [disabled]="submitting()"
+                >
+                @if (app.status === 'DRAFT' && canSubmit()) {
+                  <button mat-raised-button color="primary" (click)="onSubmitApplication()">
+                    Gửi hồ sơ
+                  </button>
+                }
+                </button>
+              }
+            
+              <!-- Nút Giải ngân (mới thêm) -->
+              @if (app.status === 'APPROVED') {
+                <button
+                  mat-raised-button
+                  color="accent"
+                  (click)="onDisburse()"
+                  [disabled]="disbursing()"
+                >
+                @if (app.status === 'APPROVED' && canDisburse()) {
+                  <button mat-raised-button color="accent" (click)="onDisburse()">
+                    Giải ngân
+                  </button>
+                }
+                </button>
+              }
+            </mat-card-actions>
+          </mat-card-actions>
+        </mat-card>
+      }
+    }
+  </div>

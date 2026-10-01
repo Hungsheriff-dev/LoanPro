@@ -1,0 +1,102 @@
+.page {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    gap: 16px;
+  
+    h2 {
+      margin: 0;
+      font-weight: 500;
+    }
+  
+    .subtitle {
+      margin: 4px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+  
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .empty {
+    text-align: center;
+    padding: 48px 16px;
+    color: #777;
+    font-size: 15px;
+  }
+  
+  .error {
+    color: #c62828;
+    margin-bottom: 12px;
+  }
+  
+  .paid-text {
+    color: #2e7d32;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  // Table styling
+  table {
+    th {
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+    }
+  
+    td {
+      vertical-align: middle;
+    }
+  
+    .mat-mdc-row:hover {
+      background-color: #fafafa;
+    }
+  }
+  
+  // Chip & button trong bảng
+  mat-chip {
+    font-size: 12px;
+    min-height: 24px;
+  }
+  
+  button mat-spinner {
+    display: inline-block;
+  }
+  
+  // Responsive
+  @media (max-width: 900px) {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .header-actions {
+      justify-content: flex-end;
+    }
+  }
+
+  .disabled-text {
+    color: #999;
+    font-size: 13px;
+  }

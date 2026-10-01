@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="header">
+    <span>Hệ thống Quản lý Khoản Vay</span>
+    <span class="spacer"></span>
+  
+    @if (authService.currentUser(); as user) {
+      <span class="user-info">
+        {{ user.fullName }} ({{ user.role }})
+      </span>
+    }
+  
+    <button mat-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Đăng xuất
+    </button>
+  </mat-toolbar>

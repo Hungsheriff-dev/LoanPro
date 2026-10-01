@@ -1,0 +1,85 @@
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoanApplicationService } from '../../../core/services/loan-application.service';
+import { LoanApplication } from '../../../core/models/loan-application.model';
+
+@Component({
+  selector: 'app-loan-application-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatTableModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './loan-application-list.component.html',
+  styleUrl: './loan-application-list.component.scss',
+})
+export class LoanApplicationListComponent implements OnInit {
+  loading = signal(true);
+  errorMessage = signal('');
+  applications = signal<LoanApplication[]>([]);
+
+  displayedColumns = [
+    'applicationId',
+    'customer',
+    'loanType',
+    'amount',
+    'tenure',
+    'status',
+    'actions',
+  ];
+
+  constructor(private loanApplicationService: LoanApplicationService) {}
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading.set(true);
+    this.loanApplicationService.getAll().subscribe({
+      next: (res) => {
+        this.applications.set(res);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMessage.set(err?.error?.message || 'Không tải được danh sách');
+      },
+    });
+  }
+
+  submit(id: string) {
+    this.loanApplicationService.submit(id).subscribe({
+      next: () => this.loadData(),
+      error: (err) => {
+        alert(err?.error?.message || 'Submit thất bại');
+      },
+    });
+  }
+
+  formatCurrency(value?: number): string {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      maximumFractionDigits: 0,
+    }).format(value || 0);
+  }
+
+  getCustomerName(row: LoanApplication): string {
+    const customer = row.customer;
+  
+    if (!customer) return '-';
+    if (typeof customer === 'string') return customer;
+  
+    return customer.fullName || customer.customerId || customer._id || '-';
+  }
+}

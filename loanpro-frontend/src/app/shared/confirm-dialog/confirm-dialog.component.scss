@@ -1,0 +1,15 @@
+mat-dialog-content {
+    min-width: 320px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  
+    p {
+      margin: 0;
+      line-height: 1.5;
+      white-space: pre-line; // hỗ trợ xuống dòng
+    }
+  }
+  
+  mat-dialog-actions {
+    padding-bottom: 12px;
+  }

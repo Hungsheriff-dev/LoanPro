@@ -1,0 +1,114 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Nhật ký hoạt động (Audit Logs)</h2>
+      <button mat-stroked-button (click)="loadData()" [disabled]="loading()">
+        Làm mới
+      </button>
+    </div>
+  
+    <!-- Bộ lọc -->
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Tìm kiếm</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (ngModelChange)="onFilterChange()"
+          placeholder="Người dùng, hành động, mô tả..."
+        />
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline" class="action-field">
+        <mat-label>Hành động</mat-label>
+        <mat-select [(ngModel)]="actionFilter" (selectionChange)="onFilterChange()"> <!-- lưu hành động lọc -->
+          @for (opt of actionOptions; track opt) {
+            <mat-option [value]="opt">
+              {{ opt === 'ALL' ? 'Tất cả' : getActionLabel(opt) }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    @if (loading()) {
+      <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (errorMessage()) {
+      <mat-card>
+        <mat-card-content>
+          <div class="error">{{ errorMessage() }}</div>
+          <button mat-button (click)="loadData()">Thử lại</button>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <mat-card>
+        <mat-card-content>
+          @if (filteredLogs().length === 0) { <!-- nếu ko có phần tử nào-->
+            <div class="empty">Không có nhật ký nào</div>
+          } @else {
+            <div class="result-count"> <!-- hiển thị số lượng -->
+              Hiển thị {{ filteredLogs().length }} / {{ logs().length }} bản ghi
+            </div>
+  
+            <table mat-table [dataSource]="filteredLogs()" class="full-width">
+              <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef>Thời gian</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatDate(row.createdAt) }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="user">
+                <th mat-header-cell *matHeaderCellDef>Người dùng</th>
+                <td mat-cell *matCellDef="let row">
+                  <div class="user-cell">
+                    <span>{{ getUserDisplay(row) }}</span>
+                    @if (getUserRole(row)) {
+                      <small class="role">{{ getUserRole(row) }}</small>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Hành động</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-chip>{{ getActionLabel(row.action) }}</mat-chip>
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="entity">
+                <th mat-header-cell *matHeaderCellDef>Đối tượng</th>
+                <td mat-cell *matCellDef="let row">
+                  <div>
+                    <strong>{{ row.entity }}</strong>
+                    @if (row.entityId) {
+                      <div class="entity-id">{{ row.entityId }}</div>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Mô tả</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.description || '—' }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="ipAddress">
+                <th mat-header-cell *matHeaderCellDef>IP</th>
+                <td mat-cell *matCellDef="let row"> <!-- let row đại diện cho 1 audit-logs -->
+                  {{ row.ipAddress || '—' }}
+                </td>
+              </ng-container>
+  
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr> <!-- tạo header của bảng -->
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr><!-- các dòng dữ liệu của cột -->
+            </table>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>

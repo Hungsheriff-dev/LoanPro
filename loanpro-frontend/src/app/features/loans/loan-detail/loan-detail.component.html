@@ -1,0 +1,155 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Chi tiết khoản vay</h2>
+      <a mat-button routerLink="/loans">← Quay lại danh sách</a>
+    </div>
+  
+    @if (loading()) {
+      <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (errorMessage() && !loan()) {
+      <mat-card>
+        <mat-card-content>
+          <div class="error">{{ errorMessage() }}</div>
+          <button mat-button routerLink="/loans">Quay lại</button>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      @if (loan(); as item) {
+        <mat-card class="detail-card">
+          <mat-card-header>
+            <mat-card-title>
+              {{ item.loanId }}
+            </mat-card-title>
+            <mat-card-subtitle>
+              <mat-chip [color]="getStatusColor(item.status)" selected>
+                {{ getStatusLabel(item.status) }}
+              </mat-chip>
+            </mat-card-subtitle>
+          </mat-card-header>
+  
+          <mat-divider></mat-divider>
+  
+          <mat-card-content>
+            <div class="info-grid">
+              <!-- Thông tin khách hàng -->
+              <div class="section">
+                <h3>Thông tin khách hàng</h3>
+                <div class="row">
+                  <span class="label">Mã KH:</span>
+                  <span class="value">
+                    {{ item.customer?.customerId || item.customer?._id || '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Họ tên:</span>
+                  <span class="value">{{ item.customer?.fullName || '—' }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">CMND/CCCD:</span>
+                  <span class="value">
+                    {{ item.customer?.identityNumber || item.customer?.idNumber || '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">SĐT:</span>
+                  <span class="value">{{ item.customer?.phone || '—' }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Email:</span>
+                  <span class="value">{{ item.customer?.email || '—' }}</span>
+                </div>
+              </div>
+  
+              <!-- Thông tin khoản vay -->
+              <div class="section">
+                <h3>Thông tin khoản vay</h3>
+                <div class="row">
+                  <span class="label">Mã hồ sơ:</span>
+                  <span class="value">
+                    {{ item.application?.applicationId || '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Loại vay:</span>
+                  <span class="value">
+                    {{ item.application?.loanType || '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Số tiền gốc:</span>
+                  <span class="value amount">
+                    {{ formatCurrency(item.principalAmount) }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Số tiền giải ngân:</span>
+                  <span class="value">
+                    {{ formatCurrency(item.disbursedAmount) }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Ngày giải ngân:</span>
+                  <span class="value">{{ formatDate(item.disbursedDate) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kỳ hạn:</span>
+                  <span class="value">
+                    {{ item.tenure ? item.tenure + ' tháng' : '—' }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Lãi suất:</span>
+                  <span class="value">
+                    {{ item.interestRate != null ? item.interestRate + '%/năm' : '—' }}
+                  </span>
+                </div>
+              </div>
+  
+              <!-- Tình trạng thanh toán -->
+              <div class="section full">
+                <h3>Tình trạng thanh toán</h3>
+                <div class="row">
+                  <span class="label">Đã trả:</span>
+                  <span class="value">{{ formatCurrency(item.totalRepaid) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dư nợ còn lại:</span>
+                  <span class="value amount">
+                    {{ formatCurrency(item.remainingBalance) }}
+                  </span>
+                </div>
+                <div class="row">
+                  <span class="label">Trạng thái:</span>
+                  <span class="value">{{ getStatusLabel(item.status) }}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Ngày tạo:</span>
+                  <span class="value">{{ formatDate(item.createdAt) }}</span>
+                </div>
+              </div>
+            </div>
+  
+            @if (errorMessage()) {
+              <div class="error">{{ errorMessage() }}</div>
+            }
+          </mat-card-content>
+  
+          <mat-divider></mat-divider>
+  
+          <mat-card-actions align="end">
+            <button mat-button routerLink="/loans">Quay lại</button>
+  
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="goToRepayments()"
+            >
+              Xem lịch trả nợ
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    }
+  </div>

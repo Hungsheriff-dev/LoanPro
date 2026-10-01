@@ -1,0 +1,112 @@
+<div class="page">
+    <div class="page-header">
+      <h2>Danh sách khoản vay</h2>
+      <div class="header-actions">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Trạng thái</mat-label>
+          <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
+            <mat-option value="ALL">Tất cả</mat-option>
+            <mat-option value="ACTIVE">Đang hoạt động</mat-option>
+            <mat-option value="OVERDUE">Quá hạn</mat-option>
+            <mat-option value="COMPLETED">Hoàn thành</mat-option>
+            <mat-option value="CLOSED">Đã đóng</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <button mat-stroked-button (click)="loadData()" [disabled]="loading()">
+          Làm mới
+        </button>
+      </div>
+    </div>
+  
+    @if (loading()) {
+      <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (errorMessage()) {
+      <mat-card>
+        <mat-card-content>
+          <div class="error">{{ errorMessage() }}</div>
+          <button mat-button (click)="loadData()">Thử lại</button>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <mat-card>
+        <mat-card-content>
+          @if (filteredLoans().length === 0) {
+            <div class="empty">Không có khoản vay nào</div>
+          } @else {
+            <table mat-table [dataSource]="filteredLoans()" class="full-width">
+              <ng-container matColumnDef="loanId">
+                <th mat-header-cell *matHeaderCellDef>Mã khoản vay</th>
+                <td mat-cell *matCellDef="let row">{{ row.loanId }}</td>
+              </ng-container>
+  
+              <ng-container matColumnDef="customer">
+                <th mat-header-cell *matHeaderCellDef>Khách hàng</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.customer?.fullName || row.customer?.customerId || '—' }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="principalAmount">
+                <th mat-header-cell *matHeaderCellDef>Số tiền gốc</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatCurrency(row.principalAmount) }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="remainingBalance">
+                <th mat-header-cell *matHeaderCellDef>Dư nợ còn lại</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatCurrency(row.remainingBalance) }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="interestRate">
+                <th mat-header-cell *matHeaderCellDef>Lãi suất</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.interestRate != null ? row.interestRate + '%/năm' : '—' }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="tenure">
+                <th mat-header-cell *matHeaderCellDef>Kỳ hạn</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.tenure ? row.tenure + ' tháng' : '—' }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-chip [color]="getStatusColor(row.status)" selected>
+                    {{ getStatusLabel(row.status) }}
+                  </mat-chip>
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="disbursedDate">
+                <th mat-header-cell *matHeaderCellDef>Ngày giải ngân</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatDate(row.disbursedDate) }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Thao tác</th>
+                <td mat-cell *matCellDef="let row">
+                  <a mat-button color="primary" [routerLink]="['/loans', row._id]">
+                    Chi tiết
+                  </a>
+                </td>
+              </ng-container>
+  
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>

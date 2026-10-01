@@ -1,0 +1,64 @@
+.sidebar {
+  width: 240px;
+  height: 100vh; // nên dùng 100vh thay vì 160vh
+  background: #1e293b;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 20px;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+// Menu item thường
+a[mat-list-item],
+a.mat-mdc-list-item {
+  color: #cbd5e1 !important;
+  border-radius: 10px;
+  margin: 4px 8px;
+  width: auto !important;
+
+  .mdc-list-item__primary-text,
+  span {
+    color: #cbd5e1 !important;
+  }
+
+  mat-icon {
+    color: #94a3b8 !important;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+
+    .mdc-list-item__primary-text,
+    span {
+      color: #f8fafc !important;
+    }
+
+    mat-icon {
+      color: #e2e8f0 !important;
+    }
+  }
+}
+
+// Item đang được chọn
+a[mat-list-item].active,
+a.mat-mdc-list-item.active,
+a.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+
+  .mdc-list-item__primary-text,
+  span {
+    color: #ffffff !important;
+  }
+
+  mat-icon {
+    color: #ffffff !important;
+  }
+}
